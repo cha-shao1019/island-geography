@@ -1,0 +1,112 @@
+/* 版面與視覺：說明見各區塊註解 */
+/* VOICE: 像一本精裝地理圖鑑的品牌網站：大標、留白、鏡頭帶路，文字精準
+   IDEA: 一座有人生活的小世界——山、河、海、城市、車流、渡輪，加上看不見的風、洋流與板塊
+   PICTURE: 全螢幕 3D 島嶼（本島＋火山離島），水面以著色器流動，可疊加等高線、岩性、季風、洋流、板塊圖層
+   COLOUR and TYPE: 天空與海洋為主色；深海藍 #0b4f6c 品牌色；標記四色：地形珊瑚紅、產業日光黃、人文碧綠、地科紫；標題 Noto Serif TC 900
+   LAYOUT: 固定 3D 舞台＋左右交錯的章節卡片；探索模式左選單＋右筆記，手機改為上方區域列＋底部筆記抽屜 */
+:root{color-scheme:light dark;
+--sea:#0b4f6c;--ink:light-dark(#10201f,#eef3f2);--mute:light-dark(#4d5d5c,#a9b8b6);--panel:light-dark(rgba(255,255,255,.9),rgba(14,22,24,.88));--solid:light-dark(#ffffff,#10181a);--line:light-dark(rgba(16,32,31,.12),rgba(238,243,242,.14));
+--geo:#e0573e;--ind:#e39a1f;--hum:#22958a;--sci:#6b4fd8}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:16px/1.7 "Noto Sans TC",system-ui,sans-serif;background:#d9e9ef;overflow-x:clip}
+button{font:inherit;color:inherit;cursor:pointer;min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--solid);padding:8px 18px;font-weight:500;white-space:nowrap}
+button:focus-visible,a:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+#stage{position:fixed;inset:0;background:linear-gradient(#8fc1dc 0%,#c6dfea 48%,#d9e9ef 62%);z-index:0}
+#stage canvas{display:block;width:100%;height:100%}
+#pins{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.pin{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;background:var(--solid);color:var(--ink);border:0;border-radius:999px;padding:4px 10px 4px 6px;font-size:13px;font-weight:700;min-height:0;box-shadow:0 4px 14px rgba(0,0,0,.18);transition:opacity .35s;opacity:0;visibility:hidden}
+.pin::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:16px;background:var(--solid);transform:translateX(-50%)}
+.pin i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.pin.on{opacity:1}
+.pin.zone{background:var(--sea);color:#fff;font-size:14px;padding:6px 14px}.pin.zone::after{background:var(--sea)}.pin.zone i{display:none}
+.pin.hot{outline:3px solid var(--c);outline-offset:2px;z-index:3}
+body.ex .pin.on{pointer-events:auto}
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:10px;padding:14px max(4vw,16px);pointer-events:none}
+.nav>*{pointer-events:auto}
+.mark{font-family:"Noto Serif TC",serif;font-weight:900;font-size:20px;color:#0b2f3f;text-decoration:none;margin-inline-end:auto;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.mark svg{width:30px;height:30px}
+.nav button{background:var(--panel);backdrop-filter:blur(10px);border-color:transparent}
+.nav button.dark{background:var(--sea);color:#fff}
+.menu{position:absolute;top:64px;right:max(4vw,16px);background:var(--solid);border-radius:18px;padding:8px;box-shadow:0 20px 50px rgba(0,0,0,.22);display:none;width:min(330px,92vw);max-height:72vh;overflow:auto}
+.menu.open{display:block}
+.menu h4{margin:8px 12px 4px;font-size:13px;color:var(--mute);font-weight:500}
+.menu button{display:flex;width:100%;border:0;border-radius:12px;text-align:start;gap:12px;align-items:center;background:transparent;white-space:normal}
+.menu button:hover{background:var(--line)}
+.menu b{width:28px;height:28px;border-radius:50%;background:var(--sea);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+.menu .s b{background:var(--sci)}
+#story{position:relative;z-index:3;pointer-events:none}
+.sec{min-height:100vh;display:flex;align-items:center;padding:110px max(5vw,16px) 60px}
+.sec.r{justify-content:flex-end}
+.card{pointer-events:auto;width:min(470px,100%);background:var(--panel);backdrop-filter:blur(14px);border-radius:26px;padding:30px;box-shadow:0 30px 60px rgba(8,40,55,.16);will-change:transform,opacity}
+.kicker{font-size:14px;color:var(--mute);display:flex;gap:10px;align-items:center}
+.kicker span{background:var(--sea);color:#fff;border-radius:999px;padding:1px 10px;font-weight:700}
+.kicker span.s{background:var(--sci)}
+.card h2{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(32px,4.4vw,46px);line-height:1.12;margin:10px 0 12px;text-wrap:balance}
+.card p{margin:0 0 16px;color:var(--mute)}
+.mk{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:8px}
+.mk li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;font-size:15px}
+.tagc{font-size:12px;font-weight:700;color:#fff;background:var(--c);border-radius:6px;padding:0 7px;white-space:nowrap}
+.go{background:var(--sea);color:#fff;border:0;font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px max(5vw,16px) 8vh;pointer-events:none}
+.hero h1{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(46px,8.4vw,112px);line-height:1.02;margin:0;color:#08293a;text-wrap:balance;text-shadow:0 2px 30px rgba(217,233,239,.8)}
+.hero p{font-size:clamp(17px,1.6vw,20px);max-width:36em;color:#173b47;margin:18px 0 26px}
+.hero .row{pointer-events:auto}
+.facts{display:flex;gap:clamp(18px,4vw,48px);margin-top:42px;flex-wrap:wrap;color:#0b2f3f}
+.facts strong{display:block;font-family:"Noto Serif TC",serif;font-size:clamp(30px,3.4vw,44px);font-weight:900;line-height:1}
+.facts span{font-size:14px}
+.flows{display:grid;gap:12px;margin:6px 0 18px}
+.flows div{display:grid;grid-template-columns:12px 1fr;gap:12px}
+.flows i{width:12px;height:12px;border-radius:50%;background:var(--c);margin-top:7px}
+.flows small{color:var(--mute);font-size:14px;line-height:1.6;display:block}
+.outro{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 16px}
+.outro .card{width:min(620px,100%)}.outro .row{justify-content:center}
+.foot{position:relative;z-index:3;background:var(--sea);color:#d7e9ef;padding:28px max(5vw,16px);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* 圖例 */
+.legend{margin:0 0 16px;font-size:13px;color:var(--mute)}
+.ramp{height:12px;border-radius:6px;background:linear-gradient(90deg,#5f9e5a,#a7c46a 10%,#e8d98a 25%,#d6a35c 45%,#a8723f 70%,#f1ece4);margin:6px 0 2px}
+.ramp-l{display:flex;justify-content:space-between}
+.sw{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px}.sw span{display:flex;align-items:center;gap:6px}.sw i{width:14px;height:14px;border-radius:4px;background:var(--c);border:1px solid var(--line)}
+/* 探索模式 */
+body.ex{overflow:hidden}
+body.ex #story,body.ex .foot{display:none}
+.zones{position:fixed;left:max(2vw,12px);top:78px;bottom:20px;width:264px;z-index:5;background:var(--panel);backdrop-filter:blur(14px);border-radius:22px;padding:12px;overflow:auto}
+.zones h3{font-size:13px;color:var(--mute);margin:10px 10px 6px;font-weight:500}
+.zones button{display:flex;width:100%;align-items:center;gap:10px;border:0;background:transparent;border-radius:14px;text-align:start;padding:7px 10px;min-height:40px;white-space:normal}
+.zones button b{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--sea);color:var(--sea);display:grid;place-items:center;font-size:12px;flex:none}
+.zones button.s b{border-color:var(--sci);color:var(--sci)}
+.zones button.on{background:var(--sea);color:#fff}.zones button.on b{background:#fff;border-color:#fff}
+.notes{position:fixed;right:max(2vw,12px);top:78px;bottom:20px;width:min(390px,34vw);z-index:5;background:var(--panel);backdrop-filter:blur(14px);border-radius:22px;padding:20px;overflow:auto}
+.notes h2{font-family:"Noto Serif TC",serif;font-weight:900;font-size:30px;line-height:1.15;margin:0 0 8px}
+.notes>p{color:var(--mute);margin:0 0 14px;font-size:15px}
+.layers{display:flex;gap:6px;flex-wrap:wrap;padding:10px;margin:0 -6px 14px;border-radius:16px;background:var(--line)}
+.layers b{width:100%;font-size:12px;color:var(--mute);font-weight:500}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.chips button,.layers button{min-height:36px;padding:4px 12px;font-size:14px}
+.chips button.on,.layers button.on{background:var(--ink);color:var(--solid);border-color:var(--ink)}
+.layers button.act{background:var(--geo);color:#fff;border-color:var(--geo)}
+.item{display:block;width:100%;text-align:start;border-radius:16px;border:1px solid var(--line);background:var(--solid);padding:12px 14px;margin-bottom:8px;white-space:normal}
+.item .t{display:flex;gap:8px;align-items:center;font-weight:700}
+.item p{margin:6px 0 0;font-size:14px;line-height:1.65;color:var(--mute);display:none}
+.item.open p{display:block}.item.open{border-color:var(--c);box-shadow:inset 3px 0 0 var(--c)}
+.hint{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:4;background:rgba(8,41,58,.75);color:#fff;font-size:13px;padding:6px 14px;border-radius:999px;white-space:nowrap}
+.toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);z-index:12;background:var(--sea);color:#fff;border-radius:14px;padding:10px 16px;font-size:14px;max-width:min(560px,92vw);opacity:0;transition:opacity .4s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:900px){
+ .zones{top:66px;left:0;right:0;bottom:auto;width:auto;border-radius:0;display:flex;gap:6px;overflow-x:auto;padding:8px 12px}
+ .zones h3{display:none}.zones button{flex:none;width:auto;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 6px;white-space:nowrap}
+ .notes{left:0;right:0;bottom:0;top:auto;width:auto;max-height:46vh;border-radius:22px 22px 0 0;padding:16px}
+ .notes h2{font-size:24px}.hint{display:none}
+ .sec,.sec.r{align-items:flex-end;justify-content:center;padding-bottom:40px}
+ .card{padding:22px}.toast{top:auto;bottom:48vh}
+}
+@media(max-width:600px){.nav .wide{display:none}.mark{font-size:16px}.mark svg{width:26px;height:26px}.nav{padding:10px 12px;gap:6px}.nav button{padding:6px 12px;font-size:14px}.zones{top:62px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.pin{transition:none}}
+
+.card.wide{width:min(520px,100%)}
+.flows b{display:block}
+.loading{position:fixed;inset:0;z-index:20;display:grid;place-items:center;font-family:"Noto Serif TC",serif;font-size:22px;font-weight:900;color:#0b2f3f;background:linear-gradient(#8fc1dc,#d9e9ef);pointer-events:none}
+.err{position:fixed;left:12px;right:12px;bottom:12px;z-index:99;background:#fff3f0;color:#8a1c0c;border:1px solid #e0573e;border-radius:12px;padding:10px 14px;font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap}
+.item.open p{display:block}
