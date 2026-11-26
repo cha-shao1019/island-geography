@@ -34,7 +34,7 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
       try {
         const lite = window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4;
         const [{ loadWorld }, { createEngine }] = await Promise.all([import('@/lib/world.js'), import('@/lib/engine/engine.js')]);
-        const W = await loadWorld(lite ? 240 : 360);
+        const W = await loadWorld(lite ? 280 : 480);
         if (disposed || !stageRef.current || !pinsRef.current) return;
         const e = createEngine({
           container: stageRef.current, pinLayer: pinsRef.current, W, zones: ZONES, sci: SCI, flows: FLOWS, cat: CAT, lite,
@@ -45,6 +45,7 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
           onProfile: (p: Profile | null) => useIsland.getState().setProfile(p),
           onHour: (h: number) => useIsland.setState({ hour: h }),
           onFlood: (f: Flood) => useIsland.getState().setFlood(f),
+          onHazard: (h: string[]) => useIsland.getState().setHazards(h),
           onTyphoon: (stage: string) => { const m = TY_MSG[stage]; if (m) useIsland.getState().say(m); },
         });
         eng.current = e;
@@ -88,7 +89,7 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
   }
   function quake() {
     eng.current?.quake();
-    useIsland.getState().say('地震！藍色圈是 P 波（較快、先到、上下震動），紅色圈是 S 波（較慢、後到、左右搖晃、破壞大）。');
+    useIsland.getState().say('地震！藍圈是 P 波（快、上下震），紅圈是 S 波（慢、左右晃、破壞大）。震央附近陡坡發生山崩，海底地震引發海嘯。');
   }
 
   function typhoon() { eng.current?.typhoon(); }

@@ -30,7 +30,7 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
     await p.screenshot({ path: `${OUT}/${tag}-${String(n++).padStart(2, '0')}-${id}.jpg`, type: 'jpeg', quality: 70 });
   }
   await p.close();
-  const zones = tag === 'desk' ? ['all', 'mtn', 'fan', 'mea', 'ter', 'volc', 'topo', 'rock', 'plate', 'climate'] : ['mtn', 'mea', 'ter'];
+  const zones = tag === 'desk' ? ['all', 'mtn', 'delta', 'fan', 'mea', 'ter', 'lag', 'east', 'volc', 'topo', 'climate'] : ['mea', 'ter'];
   for (const z of zones) {
     const q = await page(vw, `${tag}-ex-${z}`);
     await q.goto(`${BASE}/explore/${z}`, { waitUntil: 'networkidle' });
@@ -44,28 +44,34 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
     await q.close();
   }
 }
-// 模擬與工具
+// 模擬與工具（?speed=6 讓模擬在軟體渲染下也能走完）
 try {
   const q = await page({ width: 1280, height: 800 }, 'sim');
-  await q.goto(`${BASE}/explore/sim`, { waitUntil: 'networkidle' });
+  await q.goto(`${BASE}/explore/sim?speed=6`, { waitUntil: 'networkidle' });
   await ready(q);
   await q.locator('input[aria-label="海平面"]').fill('2');
   await q.waitForTimeout(3000);
   await q.screenshot({ path: `${OUT}/sim-sealevel.jpg`, type: 'jpeg', quality: 70 });
   await q.locator('input[aria-label="海平面"]').fill('0');
   await q.click('.tools >> text=颱風來襲');
-  await q.waitForTimeout(12000);
-  await q.screenshot({ path: `${OUT}/sim-typhoon.jpg`, type: 'jpeg', quality: 70 });
+  for (const [i, w] of [[1, 6000], [2, 8000], [3, 8000]]) { await q.waitForTimeout(w); await q.screenshot({ path: `${OUT}/sim-typhoon-${i}.jpg`, type: 'jpeg', quality: 70 }); }
   await q.locator('input[aria-label="時間"]').fill('21');
   await q.waitForTimeout(3000);
   await q.screenshot({ path: `${OUT}/sim-night.jpg`, type: 'jpeg', quality: 70 });
-  await q.locator('input[aria-label="時間"]').fill('17.5');
+  await q.goto(`${BASE}/explore/plate?speed=3`, { waitUntil: 'networkidle' });
+  await ready(q);
+  await q.click('.layers >> text=模擬地震');
+  await q.waitForTimeout(6000);
+  await q.screenshot({ path: `${OUT}/sim-quake.jpg`, type: 'jpeg', quality: 70 });
   await q.goto(`${BASE}/explore/fan`, { waitUntil: 'networkidle' });
   await ready(q);
   await q.click('.tools >> text=剖面與測距');
   await q.mouse.click(420, 300); await q.waitForTimeout(800); await q.mouse.click(780, 520);
   await q.waitForTimeout(3000);
   await q.screenshot({ path: `${OUT}/tool-profile.jpg`, type: 'jpeg', quality: 70 });
+  await q.mouse.move(640, 400); await q.mouse.down({ button: 'right' }); await q.mouse.move(500, 300, { steps: 8 }); await q.mouse.up({ button: 'right' });
+  await q.waitForTimeout(2500);
+  await q.screenshot({ path: `${OUT}/tool-pan.jpg`, type: 'jpeg', quality: 70 });
   await q.close();
 } catch (e) { log.push(`[sim] script error: ${e.message.split('\n')[0]}`); }
 await browser.close();

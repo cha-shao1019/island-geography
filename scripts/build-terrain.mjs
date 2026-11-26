@@ -3,7 +3,7 @@ import {genWorld,RIV} from '../lib/terrain/terrain.js';
 import {writeFileSync,mkdirSync} from 'node:fs';
 mkdirSync('public/terrain',{recursive:true});
 const t0=Date.now();
-for(const N of [360,240]){
+for(const N of [480,280]){
   const W=genWorld(N),q=new Int16Array(W.H.length);
   for(let i=0;i<W.H.length;i++)q[i]=Math.round(W.H[i]*100);
   writeFileSync(`public/terrain/heights-${N}.bin`,Buffer.from(q.buffer));

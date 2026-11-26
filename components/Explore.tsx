@@ -85,7 +85,7 @@ export default function Explore() {
           </>
         )}
       </aside>
-      <div className="hint">拖曳旋轉・滾輪或雙指縮放・點標記看筆記</div>
+      <div className="hint">拖曳旋轉・右鍵或 Ctrl＋拖曳平移・滾輪縮放・雙指縮放與平移</div>
     </div>
   );
 }

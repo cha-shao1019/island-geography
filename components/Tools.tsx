@@ -40,8 +40,16 @@ function ProfileChart({ p }: { p: Profile }) {
   );
 }
 
+const HZ: Record<string, [string, string]> = {
+  rain: ['豪雨', '颱風環流帶來豪雨，迎風坡雨量最多；河川流量暴增、水色變得混濁。'],
+  flood: ['低窪淹水', '雨水來不及排出，平原、盆地與河口低地積水；地層下陷區更嚴重。'],
+  slide: ['山崩與土石流', '陡坡岩層破碎又吸飽雨水，崩塌後土石沿坡面與河谷衝下，威脅聚落與道路。'],
+  surge: ['暴潮', '颱風低氣壓與強風把海水推向岸邊，海面暫時升高，沿海低地容易海水倒灌。'],
+  tsunami: ['海嘯', '海底地震使海床瞬間錯動，推動整層海水向外傳播；接近岸邊時浪高急增。'],
+};
+
 export default function Tools() {
-  const { tool, profile, hour, autoDay, seaLevel, flood, tide, setTool, setHour, setAutoDay, setSeaLevel, setTide } = useIsland();
+  const { tool, profile, hour, autoDay, seaLevel, flood, tide, hazards, setTool, setHour, setAutoDay, setSeaLevel, setTide } = useIsland();
   const { typhoon, clearProfile } = useActions();
   return (
     <div className="tools">
@@ -51,6 +59,12 @@ export default function Tools() {
         <button className={tide ? 'on' : ''} aria-pressed={tide} onClick={() => setTide(!tide)}>潮汐</button>
         <button className="act" onClick={typhoon}>颱風來襲</button>
       </div>
+      {hazards.length > 0 && (
+        <div className="hz" role="status">
+          <b>災害效應發生中</b>
+          {hazards.map((k) => HZ[k] && <p key={k}><strong>{HZ[k][0]}</strong>　{HZ[k][1]}</p>)}
+        </div>
+      )}
       {tool === 'profile' && !profile && <p className="small">在島上依序點兩個位置（A、B），就會畫出這條線的地形剖面。</p>}
       {profile && <><ProfileChart p={profile} /><button className="link" onClick={clearProfile}>清除剖面，重新選點</button></>}
       <div className="slider two">

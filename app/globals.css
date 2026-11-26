@@ -130,3 +130,6 @@ body.ex #story,body.ex .foot{display:none}
 .pstats dt{font-size:11px;color:var(--mute)}.pstats dd{margin:0;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pin.tool{background:#c8382a;color:#fff}.pin.tool::after{background:#c8382a}.pin.tool i{background:#fff}
 @media(max-width:600px){.pstats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.hz{border-radius:12px;background:#fff1e6;color:#5a2a12;padding:10px 12px;border:1px solid #f0b48a}
+.hz b{font-size:13px}.hz p{margin:4px 0 0;font-size:13px;line-height:1.6}.hz strong{color:#b4421c}

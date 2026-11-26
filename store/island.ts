@@ -27,6 +27,7 @@ interface IslandState {
   seaLevel: number;
   flood: Flood | null;
   tide: boolean;
+  hazards: string[];
   setActive: (id: string) => void;
   enter: (zone: string) => void;
   leave: () => void;
@@ -44,6 +45,7 @@ interface IslandState {
   setSeaLevel: (v: number) => void;
   setFlood: (f: Flood | null) => void;
   setTide: (b: boolean) => void;
+  setHazards: (h: string[]) => void;
 }
 
 export const SEASON_MSG: Record<Season, string> = {
@@ -68,6 +70,7 @@ export const useIsland = create<IslandState>((set, get) => ({
   seaLevel: 0,
   flood: null,
   tide: false,
+  hazards: [],
   setActive: (id) => set({ active: id, layers: zoneLayers(id) }),
   enter: (zone) => set({ mode: 'ex', zone, hot: null, filter: '全部', layers: zoneLayers(zone), menuOpen: false }),
   leave: () => set({ mode: 'story', hot: null, tool: null, profile: null, hour: 10, autoDay: false, seaLevel: 0, flood: null, tide: false }),
@@ -94,4 +97,5 @@ export const useIsland = create<IslandState>((set, get) => ({
   setSeaLevel: (seaLevel) => set({ seaLevel }),
   setFlood: (flood) => set({ flood }),
   setTide: (tide) => set({ tide }),
+  setHazards: (hazards) => set({ hazards }),
 }));
