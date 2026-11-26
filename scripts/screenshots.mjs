@@ -20,14 +20,14 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
   const p = await page(vw, tag);
   await p.goto(BASE, { waitUntil: 'networkidle' });
   await ready(p);
-  await p.screenshot({ path: `${OUT}/${tag}-00-hero.png` });
+  await p.screenshot({ path: `${OUT}/${tag}-00-hero\.jpg`, type: 'jpeg', quality: 70 });
   const ids = await p.$$eval('[data-view]', (els) => els.map((e) => e.id).filter(Boolean));
   let n = 1;
   for (const id of ids) {
     if (id === 'top') continue;
     await p.evaluate((i) => document.getElementById(i).scrollIntoView(), id);
     await p.waitForTimeout(4500);
-    await p.screenshot({ path: `${OUT}/${tag}-${String(n++).padStart(2, '0')}-${id}.png` });
+    await p.screenshot({ path: `${OUT}/${tag}-${String(n++).padStart(2, '0')}-${id}\.jpg`, type: 'jpeg', quality: 70 });
   }
   await p.close();
   const zones = tag === 'desk' ? ['all', 'fan', 'mea', 'ter', 'volc', 'topo', 'rock', 'plate', 'climate'] : ['fan', 'topo'];
@@ -35,11 +35,11 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
     const q = await page(vw, `${tag}-ex-${z}`);
     await q.goto(`${BASE}/explore/${z}`, { waitUntil: 'networkidle' });
     await ready(q);
-    await q.screenshot({ path: `${OUT}/${tag}-ex-${z}.png` });
+    await q.screenshot({ path: `${OUT}/${tag}-ex-${z}\.jpg`, type: 'jpeg', quality: 70 });
     if (z === 'fan' || z === 'ter') {
       await q.click('.notes .item[data-i="0"]').catch(() => {});
       await q.waitForTimeout(4000);
-      await q.screenshot({ path: `${OUT}/${tag}-ex-${z}-focus.png` });
+      await q.screenshot({ path: `${OUT}/${tag}-ex-${z}-focus\.jpg`, type: 'jpeg', quality: 70 });
     }
     await q.close();
   }
