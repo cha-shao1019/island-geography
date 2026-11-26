@@ -110,3 +110,23 @@ body.ex #story,body.ex .foot{display:none}
 .loading{position:fixed;inset:0;z-index:20;display:grid;place-items:center;font-family:"Noto Serif TC",serif;font-size:22px;font-weight:900;color:#0b2f3f;background:linear-gradient(#8fc1dc,#d9e9ef);pointer-events:none}
 .err{position:fixed;left:12px;right:12px;bottom:12px;z-index:99;background:#fff3f0;color:#8a1c0c;border:1px solid #e0573e;border-radius:12px;padding:10px 14px;font:13px/1.5 ui-monospace,monospace;white-space:pre-wrap}
 .item.open p{display:block}
+
+/* 工具與模擬 */
+.tools{display:grid;gap:10px;padding:12px;margin:0 -6px 14px;border-radius:16px;border:1px solid var(--line)}
+.tools>b{font-size:12px;color:var(--mute);font-weight:500}
+.trow{display:flex;gap:6px;flex-wrap:wrap}
+.tools button{min-height:36px;padding:4px 12px;font-size:14px}
+.tools button.on{background:var(--ink);color:var(--solid);border-color:var(--ink)}
+.tools button.act{background:var(--sea);color:#fff;border-color:var(--sea)}
+.tools button.link{border:0;background:none;color:var(--sea);text-decoration:underline;padding:0;min-height:32px;justify-self:start}
+.slider{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;font-size:14px}
+.slider span{grid-column:1/-1}.slider strong{font-variant-numeric:tabular-nums}
+.slider input{width:100%;accent-color:var(--sea);min-height:32px;grid-column:1/-1}
+.slider.two input{grid-column:auto}
+.small{font-size:13px;color:var(--mute);margin:0;line-height:1.6}
+.profile{background:var(--solid);border-radius:12px;padding:8px;border:1px solid var(--line)}
+.profile svg{width:100%;height:auto;display:block;color:var(--ink)}
+.pstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:6px 0}
+.pstats dt{font-size:11px;color:var(--mute)}.pstats dd{margin:0;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pin.tool{background:#c8382a;color:#fff}.pin.tool::after{background:#c8382a}.pin.tool i{background:#fff}
+@media(max-width:600px){.pstats{grid-template-columns:repeat(2,minmax(0,1fr))}}

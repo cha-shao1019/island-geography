@@ -6,8 +6,8 @@ import Legend from './Legend';
 
 function Chapter({ z, i, sci }: { z: Zone; i: number; sci?: boolean }) {
   const enter = useIsland((s) => s.enter), toggleSeason = useIsland((s) => s.toggleSeason);
-  const { quake } = useActions();
-  const extra = z.id === 'plate' || z.id === 'climate';
+  const { quake, typhoon } = useActions();
+  const extra = z.id === 'plate' || z.id === 'climate' || z.id === 'sim';
   return (
     <section className={`sec ${i % 2 ? 'r' : ''}`} data-view={z.id} id={`sec-${z.id}`}>
       <div className="card" data-parallax>
@@ -21,6 +21,7 @@ function Chapter({ z, i, sci }: { z: Zone; i: number; sci?: boolean }) {
         <div className="row">
           {z.id === 'plate' && <button className="go" onClick={quake}>模擬一次地震</button>}
           {z.id === 'climate' && <button className="go" onClick={toggleSeason}>切換冬季／夏季</button>}
+          {z.id === 'sim' && <button className="go" onClick={typhoon}>颱風來襲</button>}
           <button className={extra ? '' : 'go'} onClick={() => enter(z.id)}>放大探索 →</button>
         </div>
       </div>

@@ -5,6 +5,8 @@ import { EMPTY_LAYERS, zoneLayers, type Cat, type Layers } from '@/content/zones
 export type Mode = 'story' | 'ex';
 export type Season = 'winter' | 'summer';
 export type Filter = '全部' | Cat;
+export interface Profile { pts: [number, number][]; len: number; level: number }
+export interface Flood { pct: number; names: string[] }
 
 interface IslandState {
   mode: Mode;
@@ -18,6 +20,13 @@ interface IslandState {
   filter: Filter;
   toast: string;
   menuOpen: boolean;
+  tool: 'profile' | null;
+  profile: Profile | null;
+  hour: number;
+  autoDay: boolean;
+  seaLevel: number;
+  flood: Flood | null;
+  tide: boolean;
   setActive: (id: string) => void;
   enter: (zone: string) => void;
   leave: () => void;
@@ -28,6 +37,13 @@ interface IslandState {
   setFilter: (f: Filter) => void;
   say: (msg: string) => void;
   setMenu: (o: boolean) => void;
+  setTool: (t: 'profile' | null) => void;
+  setProfile: (p: Profile | null) => void;
+  setHour: (h: number) => void;
+  setAutoDay: (b: boolean) => void;
+  setSeaLevel: (v: number) => void;
+  setFlood: (f: Flood | null) => void;
+  setTide: (b: boolean) => void;
 }
 
 export const SEASON_MSG: Record<Season, string> = {
@@ -45,9 +61,16 @@ export const useIsland = create<IslandState>((set, get) => ({
   filter: '全部',
   toast: '',
   menuOpen: false,
+  tool: null,
+  profile: null,
+  hour: 10,
+  autoDay: false,
+  seaLevel: 0,
+  flood: null,
+  tide: false,
   setActive: (id) => set({ active: id, layers: zoneLayers(id) }),
   enter: (zone) => set({ mode: 'ex', zone, hot: null, filter: '全部', layers: zoneLayers(zone), menuOpen: false }),
-  leave: () => set({ mode: 'story', hot: null }),
+  leave: () => set({ mode: 'story', hot: null, tool: null, profile: null, hour: 10, autoDay: false, seaLevel: 0, flood: null, tide: false }),
   setZone: (zone) => set({ zone, hot: null, filter: '全部', layers: zoneLayers(zone) }),
   toggleLayer: (k) => {
     const L = { ...get().layers };
@@ -64,4 +87,11 @@ export const useIsland = create<IslandState>((set, get) => ({
   setFilter: (filter) => set({ filter }),
   say: (toast) => set({ toast }),
   setMenu: (menuOpen) => set({ menuOpen }),
+  setTool: (tool) => set({ tool, profile: null }),
+  setProfile: (profile) => set({ profile }),
+  setHour: (hour) => set({ hour }),
+  setAutoDay: (autoDay) => set({ autoDay }),
+  setSeaLevel: (seaLevel) => set({ seaLevel }),
+  setFlood: (flood) => set({ flood }),
+  setTide: (tide) => set({ tide }),
 }));

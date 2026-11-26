@@ -4,6 +4,7 @@ import { useIsland, type Filter } from '@/store/island';
 import { ZONES, SCI, FLOWS, CAT, ALL, type Cat } from '@/content/zones';
 import { useActions } from './IslandApp';
 import Legend from './Legend';
+import Tools from './Tools';
 
 const LAYERS = [['contour', '等高線'], ['hyp', '分層設色'], ['rock', '岩性'], ['wind', '季風'], ['current', '洋流'], ['plate', '板塊']] as const;
 
@@ -52,6 +53,7 @@ export default function Explore() {
             <h2>全島總覽</h2>
             <p>本島由中央的褶皺山脈分成東西兩側：西側河流長、平原廣，東側山地直逼海岸。海峽另一側是一座火山離島。點選島上的區域名稱放大，或疊上圖層。</p>
             <LayerBar />
+            <Tools />
             {ZONES.map((q, i) => <button key={q.id} className="item open" onClick={() => setZone(q.id)}><span className="t">{i + 1}．{q.name}</span><p>{q.m.map((m) => m[1]).join('、')}</p></button>)}
           </>
         )}
@@ -67,6 +69,7 @@ export default function Explore() {
             <h2>{z.name}</h2>
             <p>{z.lead}</p>
             <LayerBar />
+            <Tools />
             <Legend kind={z.legend} />
             <div className="chips">
               {(['全部', '地形', '產業', '人文', '地科'] as Filter[]).filter((c) => c === '全部' || cnt(c as Cat)).map((c) => (

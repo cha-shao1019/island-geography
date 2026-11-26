@@ -44,6 +44,30 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
     await q.close();
   }
 }
+// 模擬與工具
+{
+  const q = await page({ width: 1280, height: 800 }, 'sim');
+  await q.goto(`${BASE}/explore/sim`, { waitUntil: 'networkidle' });
+  await ready(q);
+  await q.locator('input[aria-label="海平面"]').fill('2');
+  await q.waitForTimeout(3000);
+  await q.screenshot({ path: `${OUT}/sim-sealevel.jpg`, type: 'jpeg', quality: 70 });
+  await q.locator('input[aria-label="海平面"]').fill('0');
+  await q.click('text=颱風來襲');
+  await q.waitForTimeout(9000);
+  await q.screenshot({ path: `${OUT}/sim-typhoon.jpg`, type: 'jpeg', quality: 70 });
+  await q.locator('input[aria-label="時間"]').fill('21');
+  await q.waitForTimeout(3000);
+  await q.screenshot({ path: `${OUT}/sim-night.jpg`, type: 'jpeg', quality: 70 });
+  await q.locator('input[aria-label="時間"]').fill('17.5');
+  await q.click('#zones >> text=沖積扇與湧泉帶');
+  await q.waitForTimeout(4000);
+  await q.click('text=剖面與測距');
+  await q.mouse.click(420, 300); await q.waitForTimeout(800); await q.mouse.click(780, 520);
+  await q.waitForTimeout(3000);
+  await q.screenshot({ path: `${OUT}/tool-profile.jpg`, type: 'jpeg', quality: 70 });
+  await q.close();
+}
 await browser.close();
 writeFileSync(`${OUT}/console.txt`, log.join('\n') || '(no console errors)');
 console.log(log.length ? log.join('\n') : 'no console errors');

@@ -1,14 +1,21 @@
 'use client';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { useIsland } from '@/store/island';
+import { useIsland, type Profile, type Flood } from '@/store/island';
+
+const TY_MSG: Record<string, string> = {
+  sea: '颱風在溫暖的海面上生成，北半球氣流以逆時針方向旋入中心。',
+  land: '颱風登陸！迎風坡豪雨，留意山崩與土石流。',
+  weak: '越過中央山脈後，低層結構被破壞，颱風強度減弱。',
+  end: '颱風遠離。雨量為水庫補充了水資源，但也留下災後復原工作。',
+};
 import { ZONES, SCI, FLOWS, CAT } from '@/content/zones';
 import Nav from './Nav';
 import Story from './Story';
 import Explore from './Explore';
 import Toast from './Toast';
 
-type Actions = { focusMarker: (zid: string, i: number) => void; quake: () => void };
-const EngineCtx = createContext<Actions>({ focusMarker: () => {}, quake: () => {} });
+type Actions = { focusMarker: (zid: string, i: number) => void; quake: () => void; typhoon: () => void; clearProfile: () => void };
+const EngineCtx = createContext<Actions>({ focusMarker: () => {}, quake: () => {}, typhoon: () => {}, clearProfile: () => {} });
 export const useActions = () => useContext(EngineCtx);
 
 export default function IslandApp({ initialZone }: { initialZone?: string }) {
@@ -35,6 +42,10 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
           onZonePin: (id: string) => useIsland.getState().enter(id),
           onMarkerPin: (zid: string, i: number) => focusMarker(zid, i),
           onError: (msg: string) => setErrors((x) => (x.length > 4 ? x : [...x, msg])),
+          onProfile: (p: Profile | null) => useIsland.getState().setProfile(p),
+          onHour: (h: number) => useIsland.setState({ hour: h }),
+          onFlood: (f: Flood) => useIsland.getState().setFlood(f),
+          onTyphoon: (stage: string) => { const m = TY_MSG[stage]; if (m) useIsland.getState().say(m); },
         });
         eng.current = e;
         const s0 = useIsland.getState();
@@ -45,6 +56,11 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
           if (s.layers !== p.layers) e.setLayers(s.layers);
           if (s.season !== p.season) e.setSeason(s.season);
           if (s.filter !== p.filter || s.zone !== p.zone) e.setCats(s.filter === '全部' ? null : { [s.filter]: 1 });
+          if (s.tool !== p.tool) e.setTool(s.tool);
+          if (s.hour !== p.hour) e.setHour(s.hour);
+          if (s.autoDay !== p.autoDay) e.setAutoDay(s.autoDay);
+          if (s.seaLevel !== p.seaLevel) e.setSeaLevel(s.seaLevel);
+          if (s.tide !== p.tide) e.setTide(s.tide);
         });
         if (initialZone) useIsland.getState().enter(initialZone);
         setStatus('ready');
@@ -75,8 +91,11 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
     useIsland.getState().say('地震！藍色圈是 P 波（較快、先到、上下震動），紅色圈是 S 波（較慢、後到、左右搖晃、破壞大）。');
   }
 
+  function typhoon() { eng.current?.typhoon(); }
+  function clearProfile() { eng.current?.clearProfile(); }
+
   return (
-    <EngineCtx.Provider value={{ focusMarker, quake }}>
+    <EngineCtx.Provider value={{ focusMarker, quake, typhoon, clearProfile }}>
       <div id="stage" ref={stageRef} />
       <div id="pins" ref={pinsRef} />
       {status === 'loading' && <div className="loading">正在生成島嶼…</div>}
