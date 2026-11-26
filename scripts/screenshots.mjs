@@ -18,7 +18,7 @@ const ready = async (p) => { await p.waitForSelector('.loading', { state: 'detac
 
 for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width: 390, height: 844 }]]) {
   const p = await page(vw, tag);
-  await p.goto(BASE, { waitUntil: 'networkidle' });
+  await p.goto(`${BASE}/?debug=1`, { waitUntil: 'networkidle' });
   await ready(p);
   await p.screenshot({ path: `${OUT}/${tag}-00-hero.jpg`, type: 'jpeg', quality: 70 });
   const ids = await p.$$eval('[data-view]', (els) => els.map((e) => e.id).filter(Boolean));

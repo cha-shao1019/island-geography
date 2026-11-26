@@ -11,6 +11,11 @@
 - `store/island.ts`：zustand 狀態；`components/IslandApp.tsx` 負責把狀態同步給引擎
 - `app/explore/[zone]`：每個區域有自己的網址
 
+- `lib/engine/post.js`：後製（GTAO、光暈、移軸、調色）與天空穹頂；自訂 ShaderMaterial 必須輸出**線性**色彩（`pow(col,2.2)`），由 OutputPass 統一轉 sRGB
+- 地形在建置時做水力侵蝕（`erode()`，有遮罩避開河道與特殊地形）
+- 網址加 `?debug=1` 顯示 FPS；`?speed=6` 加速模擬（測試用）
+- 快照：分支 `snapshot-v1.0` 是視覺大改版前的版本
+
 ## 規則
 - 介面文字一律繁體中文（臺灣用語）。
 - 標記位置若依賴地形細節（河道、階崖等），在 `lib/world.js` 的 `features()` 計算，內容裡用字串鍵引用。
