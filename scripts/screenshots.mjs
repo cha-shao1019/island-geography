@@ -30,7 +30,7 @@ for (const [tag, vw] of [['desk', { width: 1280, height: 800 }], ['mob', { width
     await p.screenshot({ path: `${OUT}/${tag}-${String(n++).padStart(2, '0')}-${id}.jpg`, type: 'jpeg', quality: 70 });
   }
   await p.close();
-  const zones = tag === 'desk' ? ['all', 'fan', 'mea', 'ter', 'volc', 'topo', 'rock', 'plate', 'climate'] : ['fan', 'topo'];
+  const zones = tag === 'desk' ? ['all', 'mtn', 'fan', 'mea', 'ter', 'volc', 'topo', 'rock', 'plate', 'climate'] : ['mtn', 'mea', 'ter'];
   for (const z of zones) {
     const q = await page(vw, `${tag}-ex-${z}`);
     await q.goto(`${BASE}/explore/${z}`, { waitUntil: 'networkidle' });
