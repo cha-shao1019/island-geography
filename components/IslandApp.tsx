@@ -78,7 +78,8 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
   /* 探索模式：鎖住頁面捲動，網址同步成 /explore/區域 */
   useEffect(() => {
     document.body.classList.toggle('ex', mode === 'ex');
-    try { window.history.replaceState(null, '', mode === 'ex' ? `/explore/${zone}` : '/'); } catch {}
+    // 保留查詢字串（例如 ?debug=1、?speed=6），只改路徑
+    try { window.history.replaceState(null, '', (mode === 'ex' ? `/explore/${zone}` : '/') + window.location.search); } catch {}
   }, [mode, zone]);
 
   function focusMarker(zid: string, i: number) {
