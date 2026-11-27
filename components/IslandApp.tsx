@@ -32,7 +32,9 @@ export default function IslandApp({ initialZone }: { initialZone?: string }) {
     let disposed = false, unsub = () => {};
     (async () => {
       try {
-        const lite = window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4;
+        // 畫質：?q=high 強制完整、?q=low 強制輕量；否則依螢幕寬度與 CPU 核心數判斷
+        const q = new URLSearchParams(window.location.search).get('q');
+        const lite = q === 'high' ? false : q === 'low' ? true : window.innerWidth < 700 || (navigator.hardwareConcurrency ?? 8) <= 4;
         const [{ loadWorld }, { createEngine }] = await Promise.all([import('@/lib/world.js'), import('@/lib/engine/engine.js')]);
         const W = await loadWorld(lite ? 280 : 480);
         if (disposed || !stageRef.current || !pinsRef.current) return;
